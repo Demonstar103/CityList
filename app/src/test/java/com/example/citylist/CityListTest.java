@@ -84,13 +84,12 @@ public class CityListTest {
         citylist.add(new City("Helsinki", "Finland"));
         citylist.add(new City("Tokyo", "Japan"));
 
-        List<City> order_by_City=citylist.getCities(1);
+        List<City> order_by_City=citylist.getCities(0);
 
         assertEquals("Helsinki", order_by_City.get(0).getCityName());
         assertEquals("Tokyo", order_by_City.get(1).getCityName());
 
-        List<City> order_By_Province=citylist.getCities(-1);
-
+        List<City> order_By_Province=citylist.getCities(1);
         assertEquals("Finland", order_By_Province.get(0).getProvinceName());
         assertEquals("Japan", order_By_Province.get(1).getProvinceName());
 }

@@ -26,6 +26,7 @@ public class City implements Comparable<City>{
 
     //sort_by_province
     static class SortByprovince implements Comparator<City> {
+        @Override
         public int compare(City a, City b)
         {
             return a.getProvinceName().compareTo(b.getProvinceName());
