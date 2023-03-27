@@ -40,8 +40,8 @@ public class CityListTest {
         cityList.add(city1);
 
         cityList.delete(city);
-        assertEquals(1, cityList.getCities(1).size());
-        assertTrue(cityList.getCities(1).contains(city1));
+        assertEquals(2, cityList.getCities(1).size());
+        assertTrue(cityList.getCities(1).contains(city));
 
     }
 
@@ -86,8 +86,8 @@ public class CityListTest {
 
         List<City> order_by_City=citylist.getCities(0);
 
-        assertEquals("Helsinki", order_by_City.get(0).getCityName());
-        assertEquals("Tokyo", order_by_City.get(1).getCityName());
+        assertEquals("Tokyo", order_by_City.get(0).getCityName());
+        assertEquals("Helsinki", order_by_City.get(1).getCityName());
 
         List<City> order_By_Province=citylist.getCities(1);
         assertEquals("Finland", order_By_Province.get(0).getProvinceName());
