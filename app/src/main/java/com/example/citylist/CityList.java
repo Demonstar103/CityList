@@ -22,14 +22,32 @@ public class CityList {
         cities.add(city);
     }
 
+    public void delete(City city) {
+        if (!cities.contains(city)) {
+            throw new IllegalArgumentException();
+        }
+        cities.remove(city);
+    }
+
+    int count(){
+        return cities.size();
+    }
+
     /**
      * This returns a sorted list of cities
      * @return
      *      Return the sorted list of cities
      */
-    public List<City> getCities() {
+
+    //sort_by_city
+    public List<City> getCities(int flag) {
         List<City> cityList = cities;
-        Collections.sort(cityList);
+        if(flag==1){
+            Collections.sort(cityList);
+        }else if(flag==-1){
+            Collections.sort(cityList, new City.SortByprovince());
+        }
         return cityList;
     }
 }
+

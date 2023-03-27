@@ -1,5 +1,7 @@
 package com.example.citylist;
 
+import java.util.Comparator;
+
 public class City implements Comparable<City>{
     private String city;
     private String province;
@@ -21,4 +23,13 @@ public class City implements Comparable<City>{
     public int compareTo(City city) {
         return this.city.compareTo(city.getCityName());
     }
+
+    //sort_by_province
+    static class SortByprovince implements Comparator<City> {
+        public int compare(City a, City b)
+        {
+            return a.getProvinceName().compareTo(b.getProvinceName());
+        }
+    }
+
 }
