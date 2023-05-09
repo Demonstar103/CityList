@@ -1,5 +1,6 @@
 package com.example.citylist;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -13,6 +14,12 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
@@ -23,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
     LinearLayout nameField;
     ArrayAdapter<String> cityAdapter;
     ArrayList<String> dataList;
+    DatabaseReference databaseReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
         cityAdapter = new ArrayAdapter<>(this, R.layout.content, dataList);
         cityList.setAdapter(cityAdapter);
 
+        databaseReference = FirebaseDatabase.getInstance().getReference();
         final Button addButton = findViewById(R.id.button_add);
         addButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -47,17 +56,21 @@ public class MainActivity extends AppCompatActivity {
         final Button confirmButton = findViewById(R.id.button_confirm);
         confirmButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+                insertdata();
                 String cityName = newName.getText().toString();
                 cityAdapter.add(cityName);
                 newName.getText().clear();
                 nameField.setVisibility(View.INVISIBLE);
             }
+
         });
 
         final Button deleteButton = findViewById(R.id.button_clear);
         deleteButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
+
                 cityAdapter.clear();
+                databaseReference.child("City List").removeValue();
             }
         });
 
@@ -71,6 +84,31 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
+        databaseReference.child("City List").addValueEventListener(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                dataList.clear();
+                for (DataSnapshot dataSnapshot : snapshot.getChildren())
+                {
+                    String city = dataSnapshot.getValue(String.class);
+                    dataList.add(city);
+                }
+                cityAdapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error){
+
+            }
+        });
+
+    }
+
+    private void insertdata() {
+        String cityName = newName.getText().toString();
+        databaseReference.child("City List").child(cityName).setValue(cityName);
 
     }
 
