@@ -25,7 +25,7 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
 
     // Declare the variables so that you will be able to reference it later.
-    ListView cityList;
+    ListView listView;
     EditText newName;
     LinearLayout nameField;
     ArrayAdapter<String> cityAdapter;
@@ -40,10 +40,10 @@ public class MainActivity extends AppCompatActivity {
         nameField = findViewById(R.id.field_nameEntry);
         newName  = findViewById(R.id.editText_name);
 
-        cityList = findViewById(R.id.city_list);
+        listView = findViewById(R.id.city_list);
         dataList = new ArrayList<>();
         cityAdapter = new ArrayAdapter<>(this, R.layout.content, dataList);
-        cityList.setAdapter(cityAdapter);
+        listView.setAdapter(cityAdapter);
 
         databaseReference = FirebaseDatabase.getInstance().getReference();
         final Button addButton = findViewById(R.id.button_add);
@@ -58,7 +58,23 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 insertdata();
                 String cityName = newName.getText().toString();
-                cityAdapter.add(cityName);
+                databaseReference.child("City List").addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if(!snapshot.hasChild(cityName)){
+                            cityAdapter.add(cityName);
+                        }
+                        else{
+                            Toast.makeText(MainActivity.this, "City already exists", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+
                 newName.getText().clear();
                 nameField.setVisibility(View.INVISIBLE);
             }
@@ -74,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        cityList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 String itemText = (String)parent.getItemAtPosition(position);
